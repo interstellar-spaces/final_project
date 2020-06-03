@@ -6,12 +6,14 @@
 class Controller:public ge211::Abstract_game
 {
 public:
-    Controller() = default;
+    Controller();
 
 protected:
     void draw(ge211::Sprite_set& set) override;
-    void on_key_down(ge211::Key key) override;
     void on_frame(double last_frame_seconds) override;
+    void on_key_down(ge211::Key key) override;
+    void on_key_up(ge211::Key key) override;
+
 private:
     Model model_;
     View view_;
