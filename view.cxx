@@ -21,12 +21,14 @@ View::View()
     , barrel_sprite_(barrel_radius, barrel_color)
     , platform_sprite_({platform_dims.width, platform_dims.height}, platform_color)
     , ladder_sprite_({ladder_dims.width, ladder_dims.height}, ladder_color)
-{
-}
+    , winning_platform_sprite({winning_platform_dims.width,
+                               winning_platform_dims.height}, platform_color)
+{}
 
 void View::draw(ge211::Sprite_set& set, const Model& model)
 {
- //   auto top_left = model.get_player() - player_radius / 2;
+    set.add_sprite(winning_platform_sprite, winning_platform_pos, 0);
+    set.add_sprite(ladder_sprite_, winning_ladder_pos, 0);
 
     for (int row = 0; row < 7; row++) {
         int y = 600 - (platform_spacing * (row + 1));
@@ -50,6 +52,7 @@ void View::draw(ge211::Sprite_set& set, const Model& model)
     }
 
     set.add_sprite(player_sprite_, model.get_player(), 2);
+
 }
 
 //
@@ -67,10 +70,6 @@ void View::draw(ge211::Sprite_set& set, const Model& model)
 //    return {col, row};
 //}
 //
-//Dimensions View::initial_window_dimensions() const
-//{
-//    return grid_size * model_.board().dimension();
-//}
 
 std::string View::initial_window_title() const
 {

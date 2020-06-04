@@ -33,6 +33,8 @@ Model::Model(Pos pos0, Dims dims, ge211::Random& random)
             ladders_.push_back(Ladder{{700, y}});
         }
     }
+    platforms_.push_back(Platform{winning_platform_pos});
+    ladders_.push_back(Ladder{winning_ladder_pos});
 }
 
 ge211::Position Model::get_player() const
@@ -77,19 +79,27 @@ void Model::update(int dt)
     }
 
     if (dt % 99 == 0) {
-        Pos p0 = {10, 90};
+        Pos p0 = {10, 93};
         Vel v0 = {2, 0};
         barrels_.push_back({p0, v0});
     }
     barrel_update();
 
+
 }
 
-bool Model::player_lose_() const{
+bool Model::player_lose_() const
+{
     if (lives == 0)
         return true;
     else
         return false;
+}
+
+bool Model::player_wins() const
+{
+    return player_.y < 50 && (player_.x > 300 && player_.x < 300 +
+    winning_platform_dims.width);
 }
 Dims Model::dims() const
 {

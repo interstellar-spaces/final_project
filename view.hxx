@@ -22,6 +22,7 @@ private:
     // sprites go here
     ge211::Circle_sprite const barrel_sprite_;
     ge211::Rectangle_sprite const platform_sprite_;
+    ge211::Rectangle_sprite const winning_platform_sprite;
     ge211::Rectangle_sprite const ladder_sprite_;
     ge211::Circle_sprite const player_sprite_;
 //   ge211::Image_sprite const player_sprite_;

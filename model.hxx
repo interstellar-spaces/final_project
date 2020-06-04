@@ -12,9 +12,11 @@ static const int barrel_radius = 8;
 static int const player_radius = 10;
 static int const platform_spacing = 70;
 static int lives = 3;
-const ge211::Dimensions player_dims();
-const ge211::Dimensions ladder_dims = {30, 70};
-const ge211::Dimensions platform_dims = {850, 20};
+const Dims ladder_dims = {30, 70};
+const Dims platform_dims = {850, 20};
+const Dims winning_platform_dims = {150, 20};
+const Pos winning_platform_pos = {300, 40};
+const Pos winning_ladder_pos = {360, 40};
 
 // Model classes:
 struct Barrel
@@ -59,7 +61,10 @@ public:
     Dims dims() const;
 
     // states whether or not the player wins
-    bool player_wins();
+    bool player_wins() const;
+
+    // checks if the player has run out of lives
+    bool player_lose_() const;
 
     // moves the player to the right
     void move_right(bool state);
@@ -93,9 +98,6 @@ public:
 
     // View the position of the barrels
     Pos_vec get_barrels() const;
-
-    // checks if the player has run out of lives
-    bool player_lose_() const;
 
     // determines whether the barrel falls through a left hole or right hole
     int barrel_in_hole_(Barrel& barrel, Platform const platform);
