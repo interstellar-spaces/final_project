@@ -7,6 +7,7 @@ TEST_CASE("Initial platforms")
 {
     Model m;
     std::vector<Platform> expected;
+    expected.push_back({winning_platform_pos});
     expected.push_back({{0, 530}});
     expected.push_back({{50, 460}});
     expected.push_back({{-100, 390}});
@@ -29,12 +30,16 @@ struct Test_access
     Model& model;
     std::vector<Barrel>& barrels()
     { return model.barrels_ ; }
+    std::vector<Ladder>& ladders()
+    { return model.ladders_ ; }
     std::vector<Platform> platforms()
     { return model.platforms_ ; }
     Dimensions& velocity()
     { return model.velocity_ ; }
     Position& player()
     { return model.player_;}
+    bool in_ladder(Ladder const ladder)
+    { return model.in_ladder_(ladder); }
 
 };
 
@@ -48,7 +53,7 @@ TEST_CASE("Make 2 Barrels")
     t.barrels().push_back(test_barrel);
     m.update(1);
     CHECK(m.get_barrels().size() == 1);
-    m.update(43);
+    m.update(99);
     CHECK(m.get_barrels().size() == 2);
 }
 
@@ -60,41 +65,21 @@ TEST_CASE("Barrel falls")
     Barrel      test_barrel = {p0, {5, 3}};
     t.barrels().push_back(test_barrel);
     m.update(1);
-    m.move_barrel_x(t.barrels()[0], 750);
+    m.move_barrel_x(t.barrels()[0], 750+ 2*barrel_radius);
     m.update(1);
-    CHECK(m.barrel_in_hole_(t.barrels()[0], t.platforms()[7]) == 6);
+    int check = m.barrel_in_hole_(t.barrels()[0], t.platforms()[7]);
+    CHECK(check == 6);
 }
-//TEST_CASE("Special barrel climbs ladder")
-//{
-// checks if barrel climbs the ladder
-//    Model m;
-//    Test_access t{m };
-//    Barrel special_barrel = {{100, 500}, true, true};
-//    t.barrels().push_back(special_barrel);
-//    t.ladder_.push_back({{200, 500}, false});
-//    m.update();
-//    special_barrel.move_to(lad.x);
-//    CHECK(special_barrel.barrel_climbs_ladder());
-//    m.update();
-//
-//    CHECK(m.get_barrels() == {{200, 600}, true, true});
-//}
 
-//TEST_CASE("Player climbs ladder")
-//{
-//    Model m;
-//    Test_access t{m };
-//    m.ladder_.clear();
-//    m.ladder_.push_back({{200, 700}, false});
-//    player.move_to(200);
-//    CHECK(player.player_climbs_ladder())
-//}
-//
-//TEST_CASE("Player falls")
-//{
-//    Model m;
-//    player.move_to(500) // let x = 500 be the position of the hole
-//    CHECK(player.player_falls());
-//
-//}
+TEST_CASE("Player in ladder")
+{
+    Model m;
+    Test_access t{m };
+    t.ladders().clear();
+    t.ladders().push_back({{200, 700}});
+    m.change_x(202);
+    bool check;
+    check = t.in_ladder(t.ladders()[0]);
+    CHECK(check);
+}
 
