@@ -17,6 +17,11 @@ void Controller::on_frame(double last_frame_seconds)
     int random = get_random().between(1, 100);
 
     model_.update(random);
+
+    if (model_.player_lose_()) {
+        quit();
+    }
+
 }
 
 void Controller::on_key_down(ge211::Key key)

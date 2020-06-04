@@ -18,7 +18,6 @@ public:
 
 
 private:
- //   Model const& model_;
 
     // sprites go here
     ge211::Circle_sprite const barrel_sprite_;
@@ -27,7 +26,6 @@ private:
     ge211::Circle_sprite const player_sprite_;
 //   ge211::Image_sprite const player_sprite_;
 //    ge211::Image_sprite player_sprite_{"mario.png"};
-
 
 
 };

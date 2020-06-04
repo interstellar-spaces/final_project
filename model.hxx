@@ -11,6 +11,7 @@ using Pos_vec = std::vector<Pos>;
 static const int barrel_radius = 8;
 static int const player_radius = 10;
 static int const platform_spacing = 70;
+static int lives = 3;
 const ge211::Dimensions player_dims();
 const ge211::Dimensions ladder_dims = {30, 70};
 const ge211::Dimensions platform_dims = {850, 20};
@@ -57,6 +58,9 @@ public:
     // returns the dimensions of the model
     Dims dims() const;
 
+    // states whether or not the player wins
+    bool player_wins();
+
     // moves the player to the right
     void move_right(bool state);
 
@@ -72,6 +76,9 @@ public:
     // moves the y-position of the player
     void change_y(int y);
 
+    // moves the x-position of the player
+    void change_x(int x);
+
     // moves the barrels to the given x
     Barrel move_barrel_x(Barrel& barrel, int x);
 
@@ -86,11 +93,16 @@ public:
 
     // View the position of the barrels
     Pos_vec get_barrels() const;
-// checks if the player has won
-//    bool player_wins_() const;
+
+    // checks if the player has run out of lives
+    bool player_lose_() const;
 
     // determines whether the barrel falls through a left hole or right hole
     int barrel_in_hole_(Barrel& barrel, Platform const platform);
+
+    // returns player to initial state
+    void reset_player_();
+
 
 private:
     // Private data members
@@ -133,10 +145,6 @@ private:
 //// determines whether the player falls to the previous platform below
 //    bool player_falls_() const;
 //
-
-
-// returns player to initial state
-    void reset_player_() const;
 
 // Test access
     friend struct Test_access;

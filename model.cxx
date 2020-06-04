@@ -2,6 +2,7 @@
 
 const Pos player0 {780, 510};
 const Vel velocity0 {0, 0};
+const int initial_lives = 3;
 
 Model::Model()
     : Model(player0, ge211::Abstract_game::default_window_dimensions, random_)
@@ -84,6 +85,12 @@ void Model::update(int dt)
 
 }
 
+bool Model::player_lose_() const{
+    if (lives == 0)
+        return true;
+    else
+        return false;
+}
 Dims Model::dims() const
 {
     return dims_;
@@ -123,6 +130,11 @@ void Model::move_down(bool state)
 void Model::change_y(int y)
 {
     player_.y = y;
+}
+
+void Model::change_x(int x)
+{
+    player_.x = x;
 }
 
 Barrel Model::move_barrel_x(Barrel& bar, int x)
@@ -210,8 +222,7 @@ void Model::barrel_update()
             barrel_hits_platform(barrels_[i], platform);
         }
         if (barrel_hits_player_(barrels_[i]))
-
-
+            reset_player_();
     }
 }
 
@@ -276,4 +287,10 @@ bool Model::barrel_hits_player_(Barrel barrel) const
 
     return !cond;
 
+}
+
+void Model::reset_player_()
+{
+    player_ = player0;
+    lives--;
 }
