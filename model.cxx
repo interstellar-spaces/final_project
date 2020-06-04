@@ -14,7 +14,7 @@ Model::Model(Pos pos0, Dims dims, ge211::Random& random)
     , random_(random)
 {
     for (int row = 0; row < 7; row++) {
-        int y = 600 - (70 * (row + 1));
+        int y = 600 - (platform_spacing * (row + 1));
         if (row == 0) {
             Pos p0{0, y};
             platforms_.push_back(Platform{p0});
@@ -75,11 +75,10 @@ void Model::update(int dt)
         }
     }
 
-    if (dt % 5 == 0) {
-        Pos p0 = {10, 94};
-        Vel v0 = {5, 0};
-        barrels_.push_back({p0, v0, (dt % 2 == 0)});
-        // if dt is 10, make a special barrel
+    if (dt % 99 == 0) {
+        Pos p0 = {10, 90};
+        Vel v0 = {2, 0};
+        barrels_.push_back({p0, v0});
     }
     barrel_update();
 
@@ -126,7 +125,18 @@ void Model::change_y(int y)
     player_.y = y;
 }
 
-void Model::move_from_platform(Platform const& platform)
+Barrel Model::move_barrel_x(Barrel& bar, int x)
+{
+    bar.position.x = x;
+    return bar;
+}
+
+void Model::move_barrel_y(Barrel& bar, int y)
+{
+    bar.position.y = y;
+}
+
+void Model::move_from_platform(Platform const platform)
 {
     if (player_hits_ground_(platform) == 3) {
         change_y(platform.position.y + platform_dims.height);
@@ -137,10 +147,8 @@ void Model::move_from_platform(Platform const& platform)
         change_y(platform.position.y - 2*player_radius);
         velocity_.height = 0;
     }
-
-
 }
-int Model::player_hits_ground_(Platform const& platform)
+int Model::player_hits_ground_(Platform const platform)
 {
     int bottom = player_.y + 2*player_radius;
     int top = player_.y;
@@ -160,7 +168,7 @@ int Model::player_hits_ground_(Platform const& platform)
     }
     return 5;
 }
-bool Model::is_within_hole(Platform const& platform) const
+bool Model::is_within_hole(Platform const platform) const
 {
     int left = player_.x;
     int right = player_.x + 2*player_radius;
@@ -172,7 +180,7 @@ bool Model::is_within_hole(Platform const& platform) const
     return hole;
 }
 
-bool Model::in_ladder_(Ladder const& ladder) const
+bool Model::in_ladder_(Ladder const ladder) const
 {
     int left = player_.x;
     int right = player_.x + 2*player_radius;
@@ -187,15 +195,85 @@ bool Model::in_ladder_(Ladder const& ladder) const
     return (side && tops);
 }
 
-int Model::barrel_counter(int start, int end) const
+void Model::barrel_update()
 {
-    if (start < end)
-        start++;
-    return start;
+    for (int i = 0; i < barrels_.size(); i++) {
+        barrels_[i].position.x += barrels_[i].velocity.width;
+        barrels_[i].position.y += barrels_[i].velocity.height;
+
+        if (barrels_[i].position.x > player0.x && barrels_[i].position.y >
+        player0.y) {
+            std::swap(barrels_[i], barrels_.back());
+            barrels_.pop_back();
+        }
+        for (Platform platform : platforms_) {
+            barrel_hits_platform(barrels_[i], platform);
+        }
+        if (barrel_hits_player_(barrels_[i]))
+
+
+    }
 }
 
-void Model::barrel_update() const {
-    for (Barrel barrel : barrels_) {
-        barrel.position += barrel.velocity;
+int Model::barrel_in_hole_(Barrel& barrel, Platform const platform)
+{
+    int left = barrel.position.x;
+    int right = barrel.position.x + 2*barrel_radius;
+    int bottom = barrel.position.y + 2 * barrel_radius;
+    int top = barrel.position.y;
+
+    int top_right = platform.position.x + platform_dims.width + 2*barrel_radius;
+    int top_left = platform.position.x - 2*barrel_radius;
+    bool left_hole  = (right < top_left || left < top_left)
+            && (bottom < platform.position.y && top > platform.position.y - platform_spacing);
+    bool right_hole = (left > top_right && right > top_right)
+                && (bottom < platform.position.y && top > platform.position.y
+                - platform_spacing);
+    if (left_hole)
+        return 5;
+    if (right_hole) {
+        barrel.velocity.height = 3;
+        return 6;
     }
+    return 7;
+}
+
+void Model::barrel_hits_platform(Barrel& barrel, Platform const& platform)
+{
+    int bottom = barrel.position.y + 2 * barrel_radius;
+
+    if (bottom < platform.position.y + platform_dims.height || bottom >
+            platform.position.y) {
+        if (barrel_in_hole_(barrel, platform) == 5) {
+            move_barrel_y(barrel, platform.position.y - platform_dims.height +
+            platform_spacing);
+            barrel.velocity.width = 3;
+        }
+        else if (barrel_in_hole_(barrel, platform) == 6) {
+            move_barrel_y(barrel, platform.position.y - platform_dims.height +
+                                  platform_spacing);
+            barrel.velocity.width = -3;
+        }
+        else
+            barrel.velocity.height = 0;
+    }
+}
+
+bool Model::barrel_hits_player_(Barrel barrel) const
+{
+    int b_left   = barrel.position.x;
+    int b_right  = barrel.position.x + 2 * barrel_radius;
+    int b_bottom = barrel.position.y + 2 * barrel_radius;
+    int b_top    = barrel.position.y;
+
+    int p_left   = player_.x;
+    int p_right  = player_.x + 2 * player_radius;
+    int p_bottom = player_.y + 2 * player_radius;
+    int p_top    = player_.y;
+
+    bool cond = (b_right < p_left || b_left > p_right) ||
+            (b_bottom < p_top || b_top > p_bottom);
+
+    return !cond;
+
 }

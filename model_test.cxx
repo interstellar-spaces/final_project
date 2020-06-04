@@ -39,23 +39,31 @@ struct Test_access
 };
 
 
-TEST_CASE("Make 1 Barrel")
+TEST_CASE("Make 2 Barrels")
 {
     Model       m;
     Test_access t{m};
     Pos         p0          = {10, 94};
-    Barrel      test_barrel = {p0, {5, 0}, false};
+    Barrel      test_barrel = {p0, {5, 0}};
     t.barrels().push_back(test_barrel);
     m.update(1);
     CHECK(m.get_barrels().size() == 1);
-    m.update(5);
+    m.update(43);
     CHECK(m.get_barrels().size() == 2);
 }
-//    test_barrel.move_to(500); // let {500, 200} be the location of the hole
-//    m.update();
-//    CHECK(test_barrel.barrel_falls());
-//}
 
+TEST_CASE("Barrel falls")
+{
+    Model       m;
+    Test_access t{m};
+    Pos         p0          = {10, 94};
+    Barrel      test_barrel = {p0, {5, 3}};
+    t.barrels().push_back(test_barrel);
+    m.update(1);
+    m.move_barrel_x(t.barrels()[0], 750);
+    m.update(1);
+    CHECK(m.barrel_in_hole_(t.barrels()[0], t.platforms()[7]) == 6);
+}
 //TEST_CASE("Special barrel climbs ladder")
 //{
 // checks if barrel climbs the ladder

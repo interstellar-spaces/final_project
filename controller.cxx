@@ -14,7 +14,7 @@ void Controller::draw(ge211::Sprite_set &set)
 
 void Controller::on_frame(double last_frame_seconds)
 {
-    int random = get_random().between(1, 10);
+    int random = get_random().between(1, 100);
 
     model_.update(random);
 }

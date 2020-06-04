@@ -29,7 +29,7 @@ void View::draw(ge211::Sprite_set& set, const Model& model)
  //   auto top_left = model.get_player() - player_radius / 2;
 
     for (int row = 0; row < 7; row++) {
-        int y = 600 - (70 * (row + 1));
+        int y = 600 - (platform_spacing * (row + 1));
         if (row == 0) {
             set.add_sprite(platform_sprite_, {0, y}, 0);
         }
@@ -46,7 +46,7 @@ void View::draw(ge211::Sprite_set& set, const Model& model)
     }
 
     for (Pos pi : model.get_barrels()) {
-        set.add_sprite(barrel_sprite_, pi);
+        set.add_sprite(barrel_sprite_, pi, 2);
     }
 
     set.add_sprite(player_sprite_, model.get_player(), 2);
