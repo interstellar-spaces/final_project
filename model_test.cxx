@@ -87,7 +87,16 @@ TEST_CASE("Player wins")
 {
     Model m;
     Test_access t{m};
+    Pos         p0          = {10, 93};
+    Barrel      test_barrel = {p0, {2, 0}};
+    t.barrels().push_back(test_barrel);
     m.change_x(winning_platform_pos.x + 10);
     m.change_y(winning_platform_pos.y - 10);
+    m.update(1);
     CHECK(m.player_wins());
+    CHECK(t.velocity().width == 0);
+    CHECK(t.velocity().height == 0);
+    CHECK(t.barrels()[0].velocity.width == 0);
+    CHECK(t.barrels()[0].velocity.height == 0);
+
 }
