@@ -12,6 +12,8 @@ static const int barrel_radius = 8;
 static const Pos barrel_p0 = {10, 93};
 static const Dims barrel_v0 = {2, 0};
 static int const player_radius = 10;
+static const Pos player0 = {780, 510};
+static const Vel velocity0 = {0, 0};
 static int const platform_spacing = 70;
 static int lives = 3; // can change this to change the amount of lives
 int const gravity_ = 3;
@@ -50,7 +52,7 @@ struct Platform
 class Model
 {
 public:
-    Model();
+//    Model();
     Model(Pos player0, Dims dims, ge211::Random& random);
 
     // updates the model with time
@@ -58,6 +60,7 @@ public:
 
     // returns the position of the player
     Pos get_player() const;
+    
 
     // returns the dimensions of the model
     Dims dims() const;

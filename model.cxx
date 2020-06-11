@@ -1,13 +1,5 @@
 #include "model.hxx"
 
-const Pos player0 {780, 510};
-const Vel velocity0 {0, 0};
-const int initial_lives = 3;
-
-Model::Model()
-        : Model(player0, ge211::Abstract_game::default_window_dimensions,
-                random_)
-{}
 
 Model::Model(Pos pos0, Dims dims, ge211::Random& random)
         : player_(player0)
@@ -53,6 +45,7 @@ std::vector<Ladder> Model::get_ladder() const
     return ladders_;
 }
 
+
 Pos_vec Model::get_barrels() const
 {
     Pos_vec positions;
@@ -65,19 +58,18 @@ Pos_vec Model::get_barrels() const
 void Model::update(int dt)
 {
     // increments the player's position
-    if (player_wins())
-        velocity_ = {0, 0};
-
+    if (player_wins()){
+        velocity_ = {0,0};
+    }
     player_.x += velocity_.width;
     player_.y += velocity_.height;
-
 
     // doesn't allow player to pass the limit of the screen
     if (player_.x < 0) {
         change_x(0);
         velocity_.width = 0;
     }
-    if (player_.x > dims_.width) {
+    if ((player_.x + 2*player_radius) > dims_.width) {
         change_x(dims_.width - 2*player_radius);
         velocity_.width = 0;
     }
@@ -89,43 +81,43 @@ void Model::update(int dt)
     if (!onladder_) {
         if (current_platform() == 1) {
             if (player_.y < get_platforms()[1].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 2) {
             if (player_.y < get_platforms()[2].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 3) {
             if (player_.y < get_platforms()[3].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 4) {
             if (player_.y < get_platforms()[4].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 5) {
             if (player_.y < get_platforms()[5].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 6) {
             if (player_.y < get_platforms()[6].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
         if (current_platform() == 7) {
             if (player_.y < get_platforms()[7].position.y + platform_dims
-            .height) {
+                    .height) {
                 player_momentum_ = 0;
             }
         }
@@ -161,18 +153,16 @@ void Model::update(int dt)
 
 bool Model::player_lose_() const
 {
-    if (lives == 0)
-        return true;
-    else
-        return false;
+    return lives == 0;
 }
 
 bool Model::player_wins() const
 {
     return (player_.y < winning_platform_pos.y + player_radius) &&
-    (player_.x > winning_platform_pos.x &&
-    player_.x < winning_platform_pos.x + winning_platform_dims.width);
+           (player_.x > winning_platform_pos.x &&
+            player_.x < winning_platform_pos.x + winning_platform_dims.width);
 }
+
 Dims Model::dims() const
 {
     return dims_;
@@ -188,15 +178,17 @@ void Model::move_right(bool state)
 
 void Model::move_left(bool state)
 {
-    if (state)
+    if (state) {
         velocity_.width = -4;
-    else velocity_.width = 0;
+    } else {
+        velocity_.width = 0;
+    }
 }
 
 void Model::jump()
 {
     if (!onair_)
-        player_momentum_ = -7;
+        player_momentum_ = -6;
     onair_ = true;
 }
 
@@ -230,10 +222,10 @@ void Model::move_from_platform(Platform const platform)
     if (player_hits_ground_(platform) == 4 && !onladder_) {
         change_y(platform.position.y - 2*player_radius);
         velocity_.height = 0;
+        onair_ = false;
     }
-    onair_ = false;
-
 }
+
 int Model::player_hits_ground_(Platform const platform)
 {
     int bottom = player_.y + 2*player_radius;
@@ -260,9 +252,8 @@ bool Model::is_within_hole(Platform const platform) const
     int right = player_.x + 2*player_radius;
 
     // checks in player is in a hole
-    bool hole = ((right < platform.position.x)  && (left < platform.position.x))
-                 || ((left > platform.position.x + platform_dims.width) &&
-            (right > platform.position.x + platform_dims.width));
+    bool hole = (right < platform.position.x  && left < platform.position.x
+                 || left > platform.position.x + platform_dims.width && right > platform.position.x + platform_dims.width);
 
     return hole;
 }
@@ -278,16 +269,15 @@ bool Model::in_ladder_(Ladder const ladder) const
             .position.x;
 
     bool tops = (center > ladder.position.y && bottom <= ladder.position.y +
-                                                      ladder_dims.height);
+                                                         ladder_dims.height);
     return (side && tops);
 }
 
-void Model::barrel_update()
-{
+void Model::barrel_update() {
     for (int i = 0; i < barrels_.size(); i++) {
-        if (player_wins())
+        if (player_wins()) {
             barrels_[i].velocity = {0,0};
-
+        }
         barrels_[i].position.x += barrels_[i].velocity.width;
         barrels_[i].position.y += barrels_[i].velocity.height;
 
@@ -375,25 +365,25 @@ void Model::reset_player_()
 
 int Model::current_platform() const {
     if( (player_.y < get_platforms()[0].position.y) && (player_.y >
-    get_platforms()[1].position.y - player_radius + platform_dims.height) ) {
+                                                        get_platforms()[1].position.y - player_radius + platform_dims.height) ) {
         return 1;
     } else if ((player_.y < get_platforms()[1].position.y) && (player_.y >
-    get_platforms()[2].position.y - player_radius + platform_dims.height)) {
+                                                               get_platforms()[2].position.y - player_radius + platform_dims.height)) {
         return 2;
     } else if ((player_.y < get_platforms()[2].position.y) && (player_.y >
-    get_platforms()[3].position.y - player_radius + platform_dims.height)){
+                                                               get_platforms()[3].position.y - player_radius + platform_dims.height)){
         return 3;
     } else if ( (player_.y < get_platforms()[3].position.y) && (player_.y >
-    get_platforms()[4].position.y - player_radius + platform_dims.height) ){
+                                                                get_platforms()[4].position.y - player_radius + platform_dims.height) ){
         return 4;
     } else if ( (player_.y < get_platforms()[4].position.y) && (player_.y >
-    get_platforms()[5].position.y - player_radius + platform_dims.height) ){
+                                                                get_platforms()[5].position.y - player_radius + platform_dims.height) ){
         return 5;
     } else if ( (player_.y < get_platforms()[5].position.y) && (player_.y >
-    get_platforms()[6].position.y - player_radius + platform_dims.height) ){
+                                                                get_platforms()[6].position.y - player_radius + platform_dims.height) ){
         return 6;
     } else if ( (player_.y < get_platforms()[6].position.y) && (player_.y >
-    get_platforms()[7].position.y - player_radius + platform_dims.height) ){
+                                                                get_platforms()[7].position.y - player_radius + platform_dims.height) ){
         return 7;
     } else {
         return 0;
