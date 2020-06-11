@@ -5,6 +5,7 @@
 #include "controller.hxx"
 
 Controller::Controller()
+    : view_(model_)
 {
 }
 void Controller::draw(ge211::Sprite_set &set)
@@ -14,7 +15,7 @@ void Controller::draw(ge211::Sprite_set &set)
 
 void Controller::on_frame(double last_frame_seconds)
 {
-    int random = get_random().between(1, 100);
+    int random = get_random().between(1, 300);
 
     model_.update(random);
 
@@ -31,9 +32,7 @@ void Controller::on_key_down(ge211::Key key)
     if (key == ge211::Key::left())
         model_.move_left(true);
     if (key == ge211::Key::up())
-        model_.jump(true);
-    if (key == ge211::Key::down())
-        model_.move_down(true);
+        model_.jump();
 
 }
 
@@ -43,9 +42,5 @@ void Controller::on_key_up(ge211::Key key)
         model_.move_right(false);
     if (key == ge211::Key::left())
         model_.move_left(false);
-    if (key == ge211::Key::up())
-        model_.jump(false);
-    if (key == ge211::Key::down())
-        model_.move_down(false);
 }
 

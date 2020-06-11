@@ -9,7 +9,8 @@ class View
 {
 
 public:
-    View();
+//    View();
+    explicit View(Model &);
     void draw(ge211::Sprite_set& set, Model const& model);
 //    ge211::Position board_to_screen(ge211::Position) const;
 //    ge211::Position screen_to_board(ge211::Position) const;
@@ -17,7 +18,9 @@ public:
     std::string initial_window_title() const;
 
 
+
 private:
+    Model const& model_;
 
     // sprites go here
     ge211::Circle_sprite const barrel_sprite_;
@@ -25,10 +28,7 @@ private:
     ge211::Rectangle_sprite const winning_platform_sprite;
     ge211::Rectangle_sprite const ladder_sprite_;
     ge211::Circle_sprite const player_sprite_;
-//   ge211::Image_sprite const player_sprite_;
-//    ge211::Image_sprite player_sprite_{"mario.png"};
+
 
 
 };
-
-

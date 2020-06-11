@@ -47,8 +47,7 @@ TEST_CASE("Make 2 Barrels")
 {
     Model       m;
     Test_access t{m};
-    Pos         p0          = {10, 94};
-    Barrel      test_barrel = {p0, {5, 0}};
+    Barrel      test_barrel = {barrel_p0, barrel_v0};
     t.barrels().push_back(test_barrel);
     m.update(1);
     CHECK(m.get_barrels().size() == 1);
@@ -60,8 +59,7 @@ TEST_CASE("Barrel falls")
 {
     Model       m;
     Test_access t{m};
-    Pos         p0          = {10, 93};
-    Barrel      test_barrel = {p0, {2, 0}};
+    Barrel      test_barrel = {barrel_p0, barrel_v0};
     t.barrels().push_back(test_barrel);
     m.update(1);
     m.move_barrel_x(t.barrels()[0], 750+ 2*barrel_radius + 1);
@@ -87,8 +85,7 @@ TEST_CASE("Player wins")
 {
     Model m;
     Test_access t{m};
-    Pos         p0          = {10, 93};
-    Barrel      test_barrel = {p0, {2, 0}};
+    Barrel      test_barrel = {barrel_p0, barrel_v0};
     t.barrels().push_back(test_barrel);
     m.change_x(winning_platform_pos.x + 10);
     m.change_y(winning_platform_pos.y - 10);
